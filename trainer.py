@@ -4,6 +4,17 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
 
+def estimate_pos_weight(loader, max_batches=50, device='cpu'):
+    pos = 0.0
+    neg = 0.0
+    for i, (_, m) in enumerate(loader):
+        if i >= max_batches:
+            break
+        m = m.float().to(device)
+        pos += m.sum().item()
+        neg += (1.0 - m).sum().item()
+    w = neg / max(pos, 1.0)
+    return torch.tensor([w], dtype=torch.float32, device=device)
 
 def dice_loss(pred, target, smooth=1.):
     pred = torch.sigmoid(pred)
@@ -25,12 +36,13 @@ def bce_dice_loss(pred, target, bce_weight=0.5):
 
 
 class BCEDiceLoss(nn.Module):
-    def __init__(self, bce_weight=0.5):
+    def __init__(self, bce_weight=0.5, pos_weight=None):
         super().__init__()
         self.bce_weight = bce_weight
+        self.pos_weight = pos_weight
 
     def forward(self, pred, target):
-        bce = F.binary_cross_entropy_with_logits(pred, target)
+        bce = F.binary_cross_entropy_with_logits(pred, target, pos_weight=self.pos_weight)
         dsc = dice_loss(pred, target)
 
         return bce * self.bce_weight + dsc * (1 - self.bce_weight)
@@ -43,8 +55,10 @@ class UnetTrainer:
         self.val_loader = val_loader
         self.device = device
         self.optimizer = optim.Adam(model.parameters(), lr=lr)
+
+        pos_weight = estimate_pos_weight(self.train_loader, max_batches=50, device=self.device)
         # self.criterion = nn.BCEWithLogitsLoss()
-        self.criterion = BCEDiceLoss(bce_weight=0.5)
+        self.criterion = BCEDiceLoss(bce_weight=0.5, pos_weight=pos_weight)
         self.history = {'train_loss': [], 'val_loss': []}
 
         # Early stopping
