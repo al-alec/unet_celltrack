@@ -11,7 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 from model import Unet
 
 
-def inference_on_images(model_path, input_dir, output_dir="predictions", threshold=0.8, visualize=True, log_tensorboard=True):
+def inference_on_images(model_path, input_dir, output_dir="predictions", threshold=0.9, visualize=True, log_tensorboard=True):
     """
     Run inference on images without ground truth masks
 
@@ -60,7 +60,8 @@ def inference_on_images(model_path, input_dir, output_dir="predictions", thresho
     # Create output directories
     os.makedirs(output_dir, exist_ok=True)
     masks_dir = os.path.join(output_dir, "masks")
-    binary_dir = os.path.join(output_dir, "binary_masks")
+    # binary_dir = os.path.join(output_dir, "binary_masks")
+    binary_dir = "test_dataset/predictions"
     os.makedirs(masks_dir, exist_ok=True)
     os.makedirs(binary_dir, exist_ok=True)
 
@@ -130,7 +131,7 @@ def inference_on_images(model_path, input_dir, output_dir="predictions", thresho
 
             # Save binary mask
             binary_img = Image.fromarray(binary_pred)
-            binary_img.save(os.path.join(binary_dir, f"{filename}_binary.png"))
+            binary_img.save(os.path.join(binary_dir, f"{filename}.png"))
 
             if visualize:
                 fig, axes = plt.subplots(1, 3, figsize=(15, 5))

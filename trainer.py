@@ -76,7 +76,6 @@ class UnetTrainer:
     def train_epoch(self):
         self.model.train()
         total_loss = 0
-        accumulation_steps = 4
 
         for idx, (images, masks) in enumerate(self.train_loader):
             if idx % 10 == 0:
@@ -86,19 +85,14 @@ class UnetTrainer:
 
             self.optimizer.zero_grad()
             outputs = self.model(images)
-            loss = self.criterion(outputs, masks) / accumulation_steps
+            loss = self.criterion(outputs, masks)
             loss.backward()
-            if (idx + 1) % accumulation_steps == 0:
-                self.optimizer.step()
-                self.optimizer.zero_grad()
+            self.optimizer.step()
 
-            total_loss += loss.item() * accumulation_steps
+            total_loss += loss.item()
 
-            # Log batch loss to TensorBoard
-            self.writer.add_scalar('Loss/train_batch', loss.item() * accumulation_steps, self.global_step)
+            self.writer.add_scalar('Loss/train_batch', loss.item(), self.global_step)
             self.global_step += 1
-
-            torch.cuda.empty_cache()
 
         return total_loss / len(self.train_loader)
 
