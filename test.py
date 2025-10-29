@@ -95,8 +95,13 @@ if __name__ == "__main__":
 
     #composants connexes
 
-    predictions_masks_path = "test_dataset/predictions"
-    predictions_masks_img = sorted(glob.glob(predictions_masks_path + "/*.png"))
+    # predictions_masks_path = "test_dataset/predictions/sor"
+    # os.makedirs("test_dataset/labeled_masks", exist_ok=True)
+
+    predictions_masks_path = "test_dataset/masks"
+    os.makedirs("test_dataset/labeled_train_masks", exist_ok=True)
+
+    predictions_masks_img = sorted(glob.glob(predictions_masks_path + "/*.tif"))
 
 
     for img in predictions_masks_img:
@@ -108,4 +113,4 @@ if __name__ == "__main__":
         labeled_img = imshow_components(labels_im)
 
         labeled_img = Image.fromarray(labeled_img)
-        labeled_img.save(os.path.join("test_dataset/labeled_masks", f"{filename}_wl.png"))
+        labeled_img.save(os.path.join("test_dataset/labeled_train_masks", f"{filename}_wl.png"))

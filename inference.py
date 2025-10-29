@@ -7,6 +7,8 @@ import os
 from pathlib import Path
 from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
+from skimage.morphology import remove_small_objects
+
 
 from model import Unet
 
@@ -99,7 +101,9 @@ def inference_on_images(model_path, input_dir, output_dir="predictions", thresho
             pred = torch.sigmoid(pred).squeeze().cpu().numpy()
 
             # Binary prediction
-            binary_pred = (pred > threshold).astype(np.uint8) * 255
+            binary_pred = (pred > threshold) .astype(np.uint8) * 255
+            print(binary_pred.dtype)
+            pred_sor = remove_small_objects(binary_pred>0, min_size=300)
 
             # Calculate statistics
             mean_conf = pred.mean()
@@ -131,7 +135,11 @@ def inference_on_images(model_path, input_dir, output_dir="predictions", thresho
 
             # Save binary mask
             binary_img = Image.fromarray(binary_pred)
+            pred_sor = Image.fromarray(pred_sor)
             binary_img.save(os.path.join(binary_dir, f"{filename}.png"))
+            sor_dir = os.path.join(binary_dir, "sor")
+            os.makedirs(sor_dir, exist_ok=True)
+            pred_sor.save(os.path.join(sor_dir, f"{filename}.png"))
 
             if visualize:
                 fig, axes = plt.subplots(1, 3, figsize=(15, 5))

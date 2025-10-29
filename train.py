@@ -61,14 +61,14 @@ def main():
 
 
     # Model
-    model = Unet(input_ch=1, n_class=1, base_ch=32)
-    print(f"Model created with base_ch=32")
-
-    trainer = UnetTrainer(model, train_loader, val_loader=val_loader, lr=1e-3, device=device, patience=5, log_dir=log_dir)
-
-    trainer.train(epochs=25)
-
-    trainer.save_model('models/unet_celltrack_6.pth')
+    # model = Unet(input_ch=1, n_class=1, base_ch=32)
+    # print(f"Model created with base_ch=32")
+    #
+    # trainer = UnetTrainer(model, train_loader, val_loader=val_loader, lr=1e-3, device=device, patience=5, log_dir=log_dir)
+    #
+    # trainer.train(epochs=25)
+    #
+    # trainer.save_model('models/unet_celltrack_6.pth')
 
 
 if __name__ == "__main__":
