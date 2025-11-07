@@ -63,7 +63,7 @@ def inference_on_images(model_path, input_dir, output_dir="predictions", thresho
     os.makedirs(output_dir, exist_ok=True)
     masks_dir = os.path.join(output_dir, "masks")
     # binary_dir = os.path.join(output_dir, "binary_masks")
-    binary_dir = "test_dataset/predictions"
+    binary_dir = "data/phc/pred/binary"
     os.makedirs(masks_dir, exist_ok=True)
     os.makedirs(binary_dir, exist_ok=True)
 

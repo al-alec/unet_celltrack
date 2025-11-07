@@ -20,8 +20,8 @@ def main():
     print(f"TensorBoard logs will be saved to: {log_dir}")
 
     # Data paths
-    image_paths = sorted(glob.glob("data/images/*.tif"))
-    mask_paths = sorted(glob.glob("data/masks/*.tif"))
+    image_paths = sorted(glob.glob("data/phc/images/*.tif"))
+    mask_paths = sorted(glob.glob("data/phc/masks/*.tif"))
     print(f"Images: {len(image_paths)}, Masks: {len(mask_paths)}")
 
     dataset = CellTrackingDataset(image_paths, mask_paths)
@@ -41,9 +41,9 @@ def main():
     # test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False, num_workers=2)
 
     # --- export du jeu de test vers test_dataset/img et test_dataset/masks ---
-    out_img = Path("test_dataset/img");
+    out_img = Path("phc/test_dataset/img");
     out_img.mkdir(parents=True, exist_ok=True)
-    out_mask = Path("test_dataset/masks");
+    out_mask = Path("phc/test_dataset/masks");
     out_mask.mkdir(parents=True, exist_ok=True)
 
     for i in test_dataset.indices:
@@ -61,14 +61,14 @@ def main():
 
 
     # Model
-    # model = Unet(input_ch=1, n_class=1, base_ch=32)
-    # print(f"Model created with base_ch=32")
-    #
-    # trainer = UnetTrainer(model, train_loader, val_loader=val_loader, lr=1e-3, device=device, patience=5, log_dir=log_dir)
-    #
-    # trainer.train(epochs=25)
-    #
-    # trainer.save_model('models/unet_celltrack_6.pth')
+    model = Unet(input_ch=1, n_class=1, base_ch=32)
+    print(f"Model created with base_ch=32")
+
+    trainer = UnetTrainer(model, train_loader, val_loader=val_loader, lr=1e-3, device=device, patience=5, log_dir=log_dir)
+
+    trainer.train(epochs=25)
+
+    trainer.save_model('models/unet_celltrack_phc_1.pth')
 
 
 if __name__ == "__main__":

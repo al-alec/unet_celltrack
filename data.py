@@ -5,9 +5,16 @@ from PIL import Image
 import sys
 
 
-ROOT = Path("Fluo-N2DH-GOWT1")     # dataset root shown in your screenshot
-OUT_IMG = Path("data/images")
-OUT_MSK = Path("data/masks")
+# ROOT = Path("Fluo-N2DH-GOWT1")     # dataset root shown in your screenshot
+# OUT_IMG = Path("data/images")
+# OUT_MSK = Path("data/masks")
+
+
+ROOT = Path("PhC-C2DL-PSC")     # dataset root shown in your screenshot
+OUT_IMG = Path("data/phc/images")
+OUT_MSK = Path("data/phc/masks")
+
+
 OUT_IMG.mkdir(parents=True, exist_ok=True)
 OUT_MSK.mkdir(parents=True, exist_ok=True)
 
